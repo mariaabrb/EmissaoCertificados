@@ -4,6 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.senac.aulaFull.model.Token;
+import com.senac.aulaFull.repository.TokenRepository;
+import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +26,9 @@ public class TokenService {
 
     private String emissor = "test";
 
+    @Autowired
+    private TokenRepository tokenRepository;
+
     public String tokenGenerate(String usuario, String senha) {
 
         Algorithm algoritm = Algorithm.HMAC256(secret);
@@ -31,16 +38,21 @@ public class TokenService {
                 .withSubject(usuario)
                 .withExpiresAt(generateExpirationDate())
                 .sign(algoritm);
+
+        tokenRepository.save(new Token(null, token, usuario));
         return token;
     }
     //verifica o token para saber se é um token válido
-    public DecodedJWT validarToken(String token){
+    public String validarToken(String token){
         Algorithm algoritm = Algorithm.HMAC256(secret);
         JWTVerifier verifier = JWT.require(algoritm)
                 .withIssuer(emissor)
                 .build();
-
-        return verifier.verify(token);
+            var tokenResult = tokenRepository.findByToken(token).orElse(null);
+            if (tokenResult == null){
+                throw new IllegalArgumentException("Token inválido.");
+            }
+            return tokenResult.getUsuario();
     }
 
         private Instant generateExpirationDate() {

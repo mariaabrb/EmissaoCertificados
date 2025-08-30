@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
-@Tag(name= "Controlador de usuarios", description = "Camada responsável por controlar os registros de usuários")
+@Tag(name= "Controller de usuarios", description = "Camada responsável por controlar os registros de usuários")
 public class UsuarioController {
 
    @Autowired
