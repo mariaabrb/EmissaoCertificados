@@ -41,12 +41,13 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             if (header != null && header.startsWith("Bearer ")) {
                 String token = header.replace("Bearer ", "");
-                var validador = tokenservice.validarToken(token);
-                String user = validador;
-                System.out.println(user);
+                var usuario = tokenservice.validarToken(token);
 
-                var autorizacao = new UsernamePasswordAuthenticationToken(user,null,
-                        Collections.emptyList());
+
+                var autorizacao = new UsernamePasswordAuthenticationToken(
+                        usuario.getEmail(),
+                        null,
+                        usuario.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(autorizacao);
 
