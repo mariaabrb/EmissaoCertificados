@@ -1,0 +1,13 @@
+package com.senac.aulaFull.repository;
+
+import com.senac.aulaFull.model.Certificado;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface CertificadoRepository extends JpaRepository<Certificado, Long> {
+
+    Optional<Certificado> findByCodValidacao(String codValidacao);
+}
