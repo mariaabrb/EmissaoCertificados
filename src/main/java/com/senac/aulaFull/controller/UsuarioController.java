@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
-@Tag(name= "Controller de usuarios", description = "Camada responsável por controlar os registros de usuários")
+@Tag(name= "Controller de usuários", description = "Camada responsável por controlar os registros de usuários")
 public class UsuarioController {
 
    @Autowired
@@ -30,13 +30,13 @@ public class UsuarioController {
     }
 
     @GetMapping
-    @Operation(summary = "usuarios",description = "consulta todos os usuários cadastrados.")
+    @Operation(summary = "usuários",description = "consulta todos os usuários cadastrados.")
     public ResponseEntity<?>consultarTodos(){
         return ResponseEntity.ok(usuarioRepository.findAll());
     }
 
     @PostMapping
-    @Operation(summary = "Salvar Usuario",description = "função executada para criar um usuário.")
+    @Operation(summary = "Salvar Usuário",description = "função executada para criar um usuário.")
     public ResponseEntity<?>salvarUsuario(@RequestBody Usuario usuario){
         try {
             var usuarioResponse = usuarioRepository.save(usuario);

@@ -29,8 +29,10 @@ public class SecurityConfiguration {
                                 .requestMatchers("/swagger-resources/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("certificados/validar/**").permitAll()
                                 .requestMatchers("/usuarios").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                                .anyRequest().authenticated()
+                                .requestMatchers("/certificados").authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
