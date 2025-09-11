@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignorar dependências do projeto frontend
+/front-certificados/node_modules
