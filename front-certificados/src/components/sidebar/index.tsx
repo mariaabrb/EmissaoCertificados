@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Sidebar() {
     return (
       <div className="bg-dark vh-100 p-3" style={{ width: "250px" }}>
@@ -29,14 +31,10 @@ function Sidebar() {
             </a>
             <ul className="collapse list-unstyled ps-3 mt-2" id="submenucadastro">
               <li className="mb-2">
-                <a href="/usuario" className="text-decoration-none text-white d-block py-1 px-3 rounded">
-                  Usuário
-                </a>
+                <Link to="/usuario" className="nav-link text-white">Usuário</Link>
               </li>
               <li>
-                <a href="/carrinho" className="text-decoration-none text-white d-block py-1 px-3 rounded">
-                  Carrinho
-                </a>
+                <Link to="/carrinho" className="nav-link text-white">Carrinho</Link>
               </li>
             </ul>
           </li>
