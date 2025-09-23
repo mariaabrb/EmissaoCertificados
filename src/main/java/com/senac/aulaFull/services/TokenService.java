@@ -35,18 +35,14 @@ public class TokenService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public String tokenGenerate(LoginRequestDto loginRequestDto) {
 
-        var usuario = usuarioRepository.findByEmail(loginRequestDto.email()).orElse(null);
-
+    public String generateToken(Usuario usuario) {
         Algorithm algoritm = Algorithm.HMAC256(secret);
-
         String token = JWT.create()
                 .withIssuer(emissor)
                 .withSubject(usuario.getEmail())
                 .withExpiresAt(this.generateExpirationDate())
                 .sign(algoritm);
-
         tokenRepository.save(new Token(null, token, usuario));
         return token;
     }

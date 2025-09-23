@@ -1,5 +1,6 @@
 package com.senac.aulaFull.config;
 
+import com.senac.aulaFull.repository.UsuarioRepository;
 import com.senac.aulaFull.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,56 +13,38 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private TokenService tokenservice;
+    private TokenService tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        //libera a URL para acesso sem token
-        String path = request.getRequestURI();
-        if (path.equals("/auth/login")
-                || path.startsWith("/swagger-resources")
-                || path.startsWith("/v3/api-docs")
-                || path.startsWith("/webjars")
-                || path.startsWith(("/swagger-ui"))){
+        var token = this.recoverToken(request);
 
-            filterChain.doFilter(request, response);
-            return;
-        }
+        if (token != null) {
+            try {
+                var usuario = tokenService.validarToken(token);
+                var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String header = request.getHeader("Authorization");
-
-        try {
-            if (header != null && header.startsWith("Bearer ")) {
-                String token = header.replace("Bearer ", "");
-                var usuario = tokenservice.validarToken(token);
-
-
-                var autorizacao = new UsernamePasswordAuthenticationToken(
-                        usuario.getEmail(),
-                        null,
-                        usuario.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(autorizacao);
-
-                filterChain.doFilter(request,response);
-
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token não informado!");
-                return;
+            } catch (Exception e) {
+                System.err.println("Token JWT inválido ou expirado: " + e.getMessage());
             }
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token não informado!");
-            return;
         }
+
+        filterChain.doFilter(request, response);
+    }
+
+    private String recoverToken(HttpServletRequest request) {
+        var authHeader = request.getHeader("Authorization");
+        if (authHeader == null) {
+            return null;
+        }
+        return authHeader.replace("Bearer ", "");
     }
 }

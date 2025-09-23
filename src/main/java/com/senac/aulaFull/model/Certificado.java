@@ -1,5 +1,6 @@
 package com.senac.aulaFull.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,11 @@ public class Certificado {
     @Column(nullable = false, unique = true)
     private String codValidacao;
 
-    // metodo que vai criar um codigo unicmo no omento q registra a entidade no banco
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    // metodo que vai criar um codigo unico no momento q registra a entidade no banco
     @PrePersist
     public void gerarCodValidacao() {
         if (codValidacao == null) {
