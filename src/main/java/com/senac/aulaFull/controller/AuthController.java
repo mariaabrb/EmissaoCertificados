@@ -26,6 +26,8 @@ public class AuthController {
     @Autowired
     private TokenService tokenService;
 
+    public record TokenDto(String token){}
+
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Efetua o login do usuário e retorna um token JWT.")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) {
@@ -38,7 +40,7 @@ public class AuthController {
             var usuario = (Usuario) auth.getPrincipal();
             var token = tokenService.generateToken(usuario);
 
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(new TokenDto(token));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Usuário ou senha inválido!");

@@ -34,8 +34,6 @@ public class SecurityConfiguration {
     @Autowired
     private JwtFilter jwtFilter;
 
-    // Dentro da classe SecurityConfiguration.java
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http

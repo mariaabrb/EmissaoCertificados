@@ -44,6 +44,8 @@ function Login() {
       if (token) {
         localStorage.setItem("authToken", token);
         navigator("/");
+      } else {
+        setError("Erro, tente novamente.")
       }
 
       // EXEMPLO DE FETCH
@@ -100,9 +102,7 @@ function Login() {
           required
         />
       </div>
-
       <button type="submit" className="btn btn-primary w-100">Entrar</button>
-
       <p className="mt-3 text-center">
         Não tem uma conta? <Link to="/auth/cadastro">Cadastre-se</Link>
       </p>
