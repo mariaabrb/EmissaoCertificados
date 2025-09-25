@@ -1,6 +1,7 @@
 package com.senac.aulaFull.controller;
 
 import com.senac.aulaFull.DTO.LoginRequestDto;
+import com.senac.aulaFull.DTO.TokenDto;
 import com.senac.aulaFull.model.Usuario;
 import com.senac.aulaFull.services.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,8 +26,6 @@ public class AuthController {
 
     @Autowired
     private TokenService tokenService;
-
-    public record TokenDto(String token){}
 
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Efetua o login do usuário e retorna um token JWT.")

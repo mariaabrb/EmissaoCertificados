@@ -5,7 +5,9 @@ import Login from "./components/login";
 import Usuario from "./pages/usuario";
 import LayoutLogin from "./components/layoutLogin/index";
 import Cadastro from "./pages/cadastrese";
-
+import { PrivateRoute } from "./components/private/index";
+import CadastroCertificadoPage from "./pages/certificados";
+import ListarCertificadosPage from "./pages/certificados/listar";
 
 function AppRoutes() {
     return (
@@ -14,9 +16,13 @@ function AppRoutes() {
                 <Route path="login" element={<Login />} />
                 <Route path="cadastro" element={<Cadastro />} />
             </Route>
-            <Route element={<LayoutAdmin />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/usuario" element={<Usuario />} />
+            <Route element={<PrivateRoute />}>
+                <Route element={<LayoutAdmin />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/usuario" element={<Usuario />} />
+                    <Route path="/certificados/novo" element={<CadastroCertificadoPage />} />
+                    <Route path="/certificados" element={<ListarCertificadosPage />} />
+                </Route>
             </Route>
         </Routes>
     );
