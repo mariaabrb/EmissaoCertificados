@@ -46,7 +46,7 @@ public class TokenService {
         tokenRepository.save(new Token(null, token, usuario));
         return token;
     }
-    //verifica o token para saber se é um token válido
+
     public Usuario validarToken(String token){
         Algorithm algoritm = Algorithm.HMAC256(secret);
         JWTVerifier verifier = JWT.require(algoritm)

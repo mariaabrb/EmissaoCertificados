@@ -1,4 +1,4 @@
-package com.senac.aulaFull.services; // Verifique o pacote
+package com.senac.aulaFull.services;
 
 import com.senac.aulaFull.DTO.CertificadoRequestDto;
 import com.senac.aulaFull.DTO.CertificadoResponseDto;

@@ -1,4 +1,4 @@
-package com.senac.aulaFull.DTO; // Verifique o pacote
+package com.senac.aulaFull.DTO;
 
 public record UsuarioResponseDto(
         Long id,

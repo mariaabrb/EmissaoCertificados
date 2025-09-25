@@ -18,7 +18,7 @@ function AppRoutes() {
             </Route>
             <Route element={<PrivateRoute />}>
                 <Route element={<LayoutAdmin />}>
-                    <Route path="/" element={<Home />} />
+                    <Route index element={<Home />} /> 
                     <Route path="/usuario" element={<Usuario />} />
                     <Route path="/certificados/novo" element={<CadastroCertificadoPage />} />
                     <Route path="/certificados" element={<ListarCertificadosPage />} />
