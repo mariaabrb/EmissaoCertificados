@@ -3,13 +3,9 @@ package com.senac.aulaFull.services;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.senac.aulaFull.DTO.LoginRequestDto;
 import com.senac.aulaFull.model.Token;
 import com.senac.aulaFull.model.Usuario;
 import com.senac.aulaFull.repository.TokenRepository;
-import com.senac.aulaFull.repository.UsuarioRepository;
-import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,10 +27,6 @@ public class TokenService {
 
     @Autowired
     private TokenRepository tokenRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
 
     public String generateToken(Usuario usuario) {
         Algorithm algoritm = Algorithm.HMAC256(secret);
