@@ -43,7 +43,6 @@ public class AuthController {
             var token = tokenService.generateToken(usuario);
             return ResponseEntity.ok(new TokenDto(token));
         } catch (Exception e) {
-            // É melhor logar o erro e.getMessage() aqui para debug
             return ResponseEntity.badRequest().body("Usuário ou senha inválido!");
         }
     }

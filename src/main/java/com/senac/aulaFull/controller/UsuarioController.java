@@ -57,7 +57,7 @@ public class UsuarioController {
     @Operation(summary = "Alterar a própria senha", description = "Altera a senha do usuário logado.")
     public ResponseEntity<?> alterarMinhaSenha(
             @RequestBody AlterarSenhaDto dto,
-            // @AuthenticationPrincipal injeta o objeto Usuariologado
+            // @AuthenticationPrincipal injeeta o objeto Usuariologado
             @AuthenticationPrincipal Usuario usuarioLogado
     ) {
 
