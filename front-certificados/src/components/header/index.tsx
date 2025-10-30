@@ -1,14 +1,45 @@
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/authSlice';
+import type{ RootState } from '../../redux/store';
 
 function Header() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isAutenticado = useSelector((state: RootState) => state.auth.isAutenticado);
+  const usuario = useSelector((state: RootState) => state.auth.usuario);
+
+  const handleLogout = () => {
+    dispatch(logout()); 
+    navigate('/');
+  };
+
+  const displayName = usuario?.nome || usuario?.email || null;
+
   return (
-    <header className="bg-dark py-3">
-      <nav className="container d-flex justify-content-center gap-4">
-        <Link to="/" className="text-white text-decoration-none fw-bold">Home</Link>
-        <Link to="/usuarios" className="text-white text-decoration-none fw-bold">Usuários</Link>
-        <Link to="/auth/login" className="text-white text-decoration-none fw-bold">Login</Link>
-      </nav>
-    </header>
+    <Navbar bg="light" expand="lg" className="shadow-sm">
+      <Container fluid>
+        <Navbar.Brand as={Link} to={isAutenticado ? "/meus-certificados" : "/"} className="fw-bold fs-4" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+          Certify Pro
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
+            {isAutenticado && displayName ? (
+              <NavDropdown title={`Olá, ${displayName}`} id="basic-nav-dropdown" align="end">
+                <NavDropdown.Item onClick={handleLogout}>
+                  Sair
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <Nav.Link as={Link} to="/">Home</Nav.Link>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
 

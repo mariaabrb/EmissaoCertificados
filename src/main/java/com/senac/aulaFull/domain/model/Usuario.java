@@ -1,16 +1,18 @@
-package com.senac.aulaFull.model;
+package com.senac.aulaFull.domain.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -26,7 +28,6 @@ public class Usuario implements UserDetails {
     private String CPF;
     private String senha;
     private String email;
-
     private String role;
 
     @Override
@@ -39,6 +40,16 @@ public class Usuario implements UserDetails {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
+    private String codigoResetSenha;
+
+    private LocalDateTime codExpiracao;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "usuario_curso",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "curso_id"))
+    private Set<Curso> cursosMatriculados = new HashSet<>();
 
     @Override
     public String getPassword() {

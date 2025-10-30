@@ -1,4 +1,4 @@
-import type Login from "../../components/login"
+import type Login from "../login"
 
 function Usuario(){
 return(

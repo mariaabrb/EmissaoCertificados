@@ -1,4 +1,4 @@
 package com.senac.aulaFull.DTO;
 
-public record CertificadoRequestDto (String nomeAluno, String nomeCurso) {
+public record CertificadoRequestDto(Long alunoId, Long cursoId) {
 }

@@ -41,11 +41,35 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        //rotas publicas p autenticacao e validacao do certificado emitido
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/certificados/validar/**").permitAll()
+                        .requestMatchers("/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/certificados/validar/**").permitAll()
+                        //rotas de cursos usuarios logados
+                        .requestMatchers(HttpMethod.GET, "/api/cursos").authenticated()
+                        //rotas de cursos adm
+                        .requestMatchers("/api/cursos/{cursoId}/alunos/**").hasRole("ADMIN")
+                        .requestMatchers("/api/usuarios/{alunoId}/cursos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/cursos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/cursos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/cursos/**").hasRole("ADMIN")
+                        //rotas de certificados p adm
+                        .requestMatchers(HttpMethod.POST, "/api/certificados").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/certificados/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/certificados/**").hasRole("ADMIN")
+                        //usuario logado listar e senha
+                        .requestMatchers(HttpMethod.GET, "/api/certificados").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/me/senha").authenticated()
+
+                        // rota de uusuarios
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                        //rota adm listar usuarios
                         .requestMatchers(HttpMethod.GET, "/usuarios", "/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/me/senha").authenticated()
+
+                        //qualquer outra requisicao precisa estar autenticado com token
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

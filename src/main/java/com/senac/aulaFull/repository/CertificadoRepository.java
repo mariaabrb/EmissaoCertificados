@@ -1,7 +1,7 @@
 package com.senac.aulaFull.repository;
 
-import com.senac.aulaFull.model.Certificado;
-import com.senac.aulaFull.model.Usuario;
+import com.senac.aulaFull.domain.model.Certificado;
+import com.senac.aulaFull.domain.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
