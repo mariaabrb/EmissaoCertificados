@@ -1,7 +1,7 @@
 package com.senac.aulaFull.services;
 
-import com.senac.aulaFull.DTO.CursoResponseDto;
-import com.senac.aulaFull.DTO.UsuarioResponseDto;
+import com.senac.aulaFull.application.DTO.curso.CursoResponseDto;
+import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
 import com.senac.aulaFull.domain.model.Curso;
 import com.senac.aulaFull.domain.model.Usuario;
 import com.senac.aulaFull.repository.CursoRepository;

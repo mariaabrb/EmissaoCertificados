@@ -1,7 +1,7 @@
 package com.senac.aulaFull.controller;
 
 import com.senac.aulaFull.domain.model.Curso;
-import com.senac.aulaFull.repository.CursoRepository;
+import com.senac.aulaFull.domain.repository.CursoRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

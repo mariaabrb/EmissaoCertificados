@@ -1,6 +1,11 @@
 package com.senac.aulaFull.services;
 
 import com.senac.aulaFull.DTO.*;
+import com.senac.aulaFull.application.DTO.login.EsqueciMinhaSenhaDto;
+import com.senac.aulaFull.application.DTO.usuario.AlterarSenhaDto;
+import com.senac.aulaFull.application.DTO.usuario.SenhaCodigoRequestDto;
+import com.senac.aulaFull.application.DTO.usuario.UsuarioRequestDto;
+import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
 import com.senac.aulaFull.domain.model.Usuario;
 import com.senac.aulaFull.infra.external.EnvioEmailRepository;
 import com.senac.aulaFull.repository.UsuarioRepository;

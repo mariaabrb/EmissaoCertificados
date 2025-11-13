@@ -1,6 +1,6 @@
 package com.senac.aulaFull.services;
 
-import com.senac.aulaFull.DTO.CertificadoRequestDto;
+import com.senac.aulaFull.application.DTO.certificado.CertificadoRequestDto;
 import com.senac.aulaFull.domain.model.Certificado;
 import com.senac.aulaFull.domain.model.Curso;
 import com.senac.aulaFull.domain.model.Usuario;

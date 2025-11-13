@@ -1,12 +1,12 @@
 package com.senac.aulaFull.controller;
 
-import com.senac.aulaFull.DTO.EsqueciMinhaSenhaDto;
-import com.senac.aulaFull.DTO.LoginRequestDto;
-import com.senac.aulaFull.DTO.SenhaCodigoRequestDto;
-import com.senac.aulaFull.DTO.TokenDto;
+import com.senac.aulaFull.application.DTO.login.EsqueciMinhaSenhaDto;
+import com.senac.aulaFull.application.DTO.login.LoginRequestDto;
+import com.senac.aulaFull.application.DTO.usuario.SenhaCodigoRequestDto;
+import com.senac.aulaFull.application.DTO.login.TokenDto;
 import com.senac.aulaFull.domain.model.Usuario;
-import com.senac.aulaFull.services.TokenService;
-import com.senac.aulaFull.services.UsuarioService;
+import com.senac.aulaFull.application.services.TokenService;
+import com.senac.aulaFull.application.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

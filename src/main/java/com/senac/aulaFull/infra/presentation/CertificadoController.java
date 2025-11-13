@@ -1,9 +1,9 @@
 package com.senac.aulaFull.controller;
 
-import com.senac.aulaFull.DTO.CertificadoRequestDto;
+import com.senac.aulaFull.application.DTO.certificado.CertificadoRequestDto;
 import com.senac.aulaFull.domain.model.Certificado;
 import com.senac.aulaFull.domain.model.Usuario;
-import com.senac.aulaFull.services.CertificadoService;
+import com.senac.aulaFull.application.services.CertificadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
