@@ -1,8 +1,11 @@
-package com.senac.aulaFull.repository;
+package com.senac.aulaFull.domain.repository;
 
 import com.senac.aulaFull.domain.model.Curso;
+import com.senac.aulaFull.domain.model.Instituicao;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CursoRepository extends JpaRepository<Curso, Long> {
+import java.util.List;
 
+public interface CursoRepository extends JpaRepository<Curso, Long> {
+    List<Curso> findByInstituicao(Instituicao instituicao);
 }

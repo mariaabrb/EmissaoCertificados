@@ -1,54 +1,58 @@
-package com.senac.aulaFull.controller;
+package com.senac.aulaFull.infra.presentation;
 
-import com.senac.aulaFull.domain.model.Curso;
-import com.senac.aulaFull.domain.repository.CursoRepository;
+import com.senac.aulaFull.application.DTO.curso.CursoRequestDto;
+import com.senac.aulaFull.application.DTO.curso.CursoResponseDto;
+import com.senac.aulaFull.domain.model.Usuario;
+import com.senac.aulaFull.application.services.CursoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cursos")
+@Tag(name = "Controller de Cursos", description = "gerenciamento de cursos da instituição")
 public class CursoController {
 
-    private final CursoRepository cursoRepository;
-
-    public CursoController(CursoRepository cursoRepository) {
-        this.cursoRepository = cursoRepository;
-    }
+    @Autowired
+    private CursoService cursoService;
 
     @PostMapping
-    public ResponseEntity<Curso> criarCurso(@RequestBody Curso curso) {
-        Curso novoCurso = cursoRepository.save(curso);
-        return ResponseEntity.ok(novoCurso);
+    @Operation(summary = "Criar Curso", description = "cria um curso vinculado a instituição do admin logado.")
+    public ResponseEntity<CursoResponseDto> criarCurso(
+            @RequestBody CursoRequestDto dados,
+            @AuthenticationPrincipal Usuario adminLogado
+    ) {
+        // passa o adminlogado para o serviço saber qual a instituiçao
+        CursoResponseDto novoCurso = cursoService.criarCurso(dados, adminLogado);
+        return new ResponseEntity<>(novoCurso, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Curso>> listarCursos() {
-        return ResponseEntity.ok(cursoRepository.findAll());
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Curso> atualizarCurso(@PathVariable Long id, @RequestBody Curso dadosCurso) {
-        Optional<Curso> cursoOptional = cursoRepository.findById(id);
-        if (cursoOptional.isPresent()) {
-            Curso cursoAtual = cursoOptional.get();
-            cursoAtual.setNome(dadosCurso.getNome());
-            Curso cursoSalvo = cursoRepository.save(cursoAtual);
-            return ResponseEntity.ok(cursoSalvo);
-        }
-        else{
-            return ResponseEntity.notFound().build();
-        }
+    @Operation(summary = "Listar Cursos", description = "lista apenas os cursos da instituição do admin logado.")
+    public ResponseEntity<List<CursoResponseDto>> listarCursos(
+            @AuthenticationPrincipal Usuario adminLogado
+    ) {
+        List<CursoResponseDto> cursos = cursoService.listarCursos(adminLogado);
+        return ResponseEntity.ok(cursos);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirCurso(@PathVariable Long id) {
-        if (!cursoRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+    @Operation(summary = "Deletar Curso", description = "deleta um curso (apenas se pertencer à instituição do admin).")
+    public ResponseEntity<Void> deletarCurso(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Usuario adminLogado
+    ) {
+        try {
+            cursoService.deletarCurso(id, adminLogado);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
         }
-        cursoRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

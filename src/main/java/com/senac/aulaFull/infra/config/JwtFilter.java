@@ -1,7 +1,7 @@
-package com.senac.aulaFull.config;
+package com.senac.aulaFull.infra.config;
 
-import com.senac.aulaFull.repository.UsuarioRepository;
-import com.senac.aulaFull.services.TokenService;
+import com.senac.aulaFull.domain.repository.UsuarioRepository;
+import com.senac.aulaFull.application.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

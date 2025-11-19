@@ -1,4 +1,4 @@
-package com.senac.aulaFull.DTO;
+package com.senac.aulaFull.application.DTO.curso;
 
 public record CursoResponseDto(
         Long id,

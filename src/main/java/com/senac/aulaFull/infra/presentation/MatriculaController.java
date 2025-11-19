@@ -1,8 +1,8 @@
-package com.senac.aulaFull.controller;
+package com.senac.aulaFull.infra.presentation;
 
 import com.senac.aulaFull.application.DTO.curso.CursoResponseDto;
 import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
-import com.senac.aulaFull.application.services.MatriculaService;
+import com.senac.aulaFull.services.MatriculaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;

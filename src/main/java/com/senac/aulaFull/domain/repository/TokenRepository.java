@@ -1,4 +1,4 @@
-package com.senac.aulaFull.repository;
+package com.senac.aulaFull.domain.repository;
 
 import com.senac.aulaFull.domain.model.Token;
 import org.springframework.data.jpa.repository.JpaRepository;

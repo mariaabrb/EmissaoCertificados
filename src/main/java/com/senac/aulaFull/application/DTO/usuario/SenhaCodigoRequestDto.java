@@ -1,4 +1,4 @@
-package com.senac.aulaFull.DTO;
+package com.senac.aulaFull.application.DTO.usuario;
 
 public record SenhaCodigoRequestDto (
         String email,

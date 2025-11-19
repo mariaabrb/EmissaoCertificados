@@ -1,14 +1,14 @@
-package com.senac.aulaFull.services;
+package com.senac.aulaFull.application.services;
 
-import com.senac.aulaFull.DTO.*;
-import com.senac.aulaFull.application.DTO.login.EsqueciMinhaSenhaDto;
+
+import com.senac.aulaFull.domain.model.Usuario;
+import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
+import com.senac.aulaFull.infra.external.EnvioEmailRepository;
 import com.senac.aulaFull.application.DTO.usuario.AlterarSenhaDto;
+import com.senac.aulaFull.application.DTO.login.EsqueciMinhaSenhaDto;
 import com.senac.aulaFull.application.DTO.usuario.SenhaCodigoRequestDto;
 import com.senac.aulaFull.application.DTO.usuario.UsuarioRequestDto;
-import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
-import com.senac.aulaFull.domain.model.Usuario;
-import com.senac.aulaFull.infra.external.EnvioEmailRepository;
-import com.senac.aulaFull.repository.UsuarioRepository;
+import com.senac.aulaFull.domain.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +33,7 @@ public class UsuarioService implements UserDetailsService {
     @Autowired
     private EnvioEmailRepository envioEmailRepository;
 
-    public Usuario criarUsuario(UsuarioRequestDto dados) {
+    public Usuario criarUsuario( UsuarioRequestDto dados) {
         if (usuarioRepository.findByEmail(dados.email()).isPresent()) {
             throw new RuntimeException("E-mail já cadastrado.");
         }

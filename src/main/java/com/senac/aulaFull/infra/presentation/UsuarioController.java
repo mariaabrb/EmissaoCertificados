@@ -1,8 +1,8 @@
-package com.senac.aulaFull.controller;
+package com.senac.aulaFull.infra.presentation;
 
-import com.senac.aulaFull.application.DTO.usuario.AlterarSenhaDto;
 import com.senac.aulaFull.application.DTO.usuario.UsuarioRequestDto;
 import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
+import com.senac.aulaFull.application.DTO.usuario.AlterarSenhaDto;
 import com.senac.aulaFull.domain.model.Usuario;
 import com.senac.aulaFull.application.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;

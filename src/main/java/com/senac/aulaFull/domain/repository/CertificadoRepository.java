@@ -1,6 +1,7 @@
-package com.senac.aulaFull.repository;
+package com.senac.aulaFull.domain.repository;
 
 import com.senac.aulaFull.domain.model.Certificado;
+import com.senac.aulaFull.domain.model.Instituicao;
 import com.senac.aulaFull.domain.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,6 @@ public interface CertificadoRepository extends JpaRepository<Certificado, Long> 
     Optional<Certificado> findByCodValidacao(String codValidacao);
 
     List<Certificado> findByUsuario(Usuario usuario);
+
+    List<Certificado> findByCurso_Instituicao(Instituicao instituicao);
 }

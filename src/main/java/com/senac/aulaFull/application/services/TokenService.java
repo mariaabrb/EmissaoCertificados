@@ -1,4 +1,4 @@
-package com.senac.aulaFull.services;
+package com.senac.aulaFull.application.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.core.GrantedAuthority;
 import com.senac.aulaFull.domain.model.Token;
 import com.senac.aulaFull.domain.model.Usuario;
-import com.senac.aulaFull.repository.TokenRepository;
+import com.senac.aulaFull.domain.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

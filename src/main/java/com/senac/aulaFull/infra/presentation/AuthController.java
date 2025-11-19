@@ -1,9 +1,9 @@
-package com.senac.aulaFull.controller;
+package com.senac.aulaFull.infra.presentation;
 
+import com.senac.aulaFull.application.DTO.login.TokenDto;
 import com.senac.aulaFull.application.DTO.login.EsqueciMinhaSenhaDto;
 import com.senac.aulaFull.application.DTO.login.LoginRequestDto;
 import com.senac.aulaFull.application.DTO.usuario.SenhaCodigoRequestDto;
-import com.senac.aulaFull.application.DTO.login.TokenDto;
 import com.senac.aulaFull.domain.model.Usuario;
 import com.senac.aulaFull.application.services.TokenService;
 import com.senac.aulaFull.application.services.UsuarioService;

@@ -21,6 +21,10 @@ public class Curso {
     @Column(nullable = false, unique = true)
     private String nome;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "instituicao_id", nullable = false)
+    private Instituicao instituicao;
+
     @ManyToMany(mappedBy = "cursosMatriculados", fetch = FetchType.LAZY)
     private Set<Usuario> alunosMatriculados = new HashSet<>();
 }
