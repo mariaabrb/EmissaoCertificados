@@ -1,4 +1,4 @@
-package com.senac.aulaFull.services;
+package com.senac.aulaFull.application.services;
 
 import com.senac.aulaFull.application.DTO.curso.CursoResponseDto;
 import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
@@ -26,9 +26,9 @@ public class MatriculaService {
     @Transactional
     public void matricularAlunoEmCurso(Long usuarioId, Long cursoId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new EntityNotFoundException("usuário não encontrado com ID: " + usuarioId));
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + usuarioId));
         Curso curso = cursoRepository.findById(cursoId)
-                .orElseThrow(() -> new EntityNotFoundException("curso não encontrado com ID: " + cursoId));
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado com ID: " + cursoId));
 
         usuario.getCursosMatriculados().add(curso);
         curso.getAlunosMatriculados().add(usuario);
@@ -45,7 +45,7 @@ public class MatriculaService {
 
 
         usuario.getCursosMatriculados().remove(curso);
-        curso.getAlunosMatriculados().remove(usuario);
+        curso.getAlunosMatriculados().remove(curso);
 
         usuarioRepository.save(usuario);
     }
@@ -55,9 +55,9 @@ public class MatriculaService {
             throw new EntityNotFoundException("Curso não encontrado com ID: " + cursoId);
         }
 
-        List<Usuario> alunos = usuarioRepository.findByCursosMatriculados_Id(cursoId);
+        Curso curso = cursoRepository.findById(cursoId).get();
 
-        return alunos.stream()
+        return curso.getAlunosMatriculados().stream()
                 .map(this::toResponseDto)
                 .collect(Collectors.toList());
     }
@@ -67,14 +67,16 @@ public class MatriculaService {
                 usuario.getId(),
                 usuario.getNome(),
                 usuario.getEmail(),
-                usuario.getRole()
+                usuario.getRole(),
+                usuario.getNomeInstituicao()
         );
     }
+
     public List<CursoResponseDto> listarCursosPorAluno(Long alunoId) {
         Usuario usuario = usuarioRepository.findById(alunoId)
-                .orElseThrow(() -> new EntityNotFoundException("usuário não encontrado com ID: " + alunoId));
-        return usuario.getCursosMatriculados()
-                .stream()
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + alunoId));
+
+        return usuario.getCursosMatriculados().stream()
                 .map(this::toCursoResponseDto)
                 .collect(Collectors.toList());
     }

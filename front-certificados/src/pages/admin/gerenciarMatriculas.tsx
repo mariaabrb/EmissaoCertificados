@@ -75,7 +75,7 @@ function GerenciarMatriculasPage() {
         const usuariosData: UsuarioResponseDto[] = Array.isArray(usuariosRes.data) ? usuariosRes.data : [];
         const users = usuariosData
             .map((dto: UsuarioResponseDto): Usuario => ({ id: dto.id, nome: dto.nome, email: dto.email, role: dto.role }))
-            .filter((user: Usuario) => user.role === 'USER');
+            .filter((user: Usuario) => user.role === 'USER' || user.role === 'ROLE_USER');
         setTodosUsuarios(users);
 
       } catch (err) {

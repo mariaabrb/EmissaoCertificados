@@ -29,6 +29,12 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 var usuario = tokenService.validarToken(token);
+
+                System.out.println("Token recebido: " + token.substring(0, 10) + "...");
+                System.out.println("Usuário encontrado: " + usuario.getEmail());
+                System.out.println("Role no Banco: " + usuario.getRole());
+                System.out.println("Permissões (getAuthorities): " + usuario.getAuthorities());
+
                 var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

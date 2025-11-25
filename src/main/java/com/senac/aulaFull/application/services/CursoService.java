@@ -18,13 +18,11 @@ public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    // cria curso para o admin logado
     public CursoResponseDto criarCurso(CursoRequestDto dados, Usuario adminLogado) {
         Curso novoCurso = new Curso();
         novoCurso.setNome(dados.nome());
 
-        //vincula à instituição do admin
-        novoCurso.setInstituicao(adminLogado.getInstituicao());
+        novoCurso.setAdminResponsavel(adminLogado);
 
         Curso cursoSalvo = cursoRepository.save(novoCurso);
 
@@ -35,7 +33,7 @@ public class CursoService {
     }
 
     public List<CursoResponseDto> listarCursos(Usuario adminLogado) {
-        List<Curso> cursos = cursoRepository.findByInstituicao(adminLogado.getInstituicao());
+        List<Curso> cursos = cursoRepository.findByAdminResponsavelAndAtivoTrue(adminLogado);
 
         return cursos.stream()
                 .map(curso -> new CursoResponseDto(
@@ -49,10 +47,25 @@ public class CursoService {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
-        if (!curso.getInstituicao().getId().equals(adminLogado.getInstituicao().getId())) {
-            throw new RuntimeException("Acesso Negado: Você não pode deletar cursos de outra instituição.");
+        if (!curso.getAdminResponsavel().getId().equals(adminLogado.getId())) {
+            throw new RuntimeException("Acesso Negado: Você não pode deletar cursos que não criou.");
+        }
+        curso.setAtivo(false);
+        cursoRepository.save(curso);
+    }
+
+    public CursoResponseDto atualizarCurso(Long id, CursoRequestDto dados, Usuario adminLogado) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+
+        if (!curso.getAdminResponsavel().getId().equals(adminLogado.getId())) {
+            throw new RuntimeException("Acesso Negado: Você não pode editar cursos que não criou.");
         }
 
-        cursoRepository.delete(curso);
+        curso.setNome(dados.nome());
+
+        cursoRepository.save(curso);
+
+        return new CursoResponseDto(curso.getId(), curso.getNome());
     }
 }

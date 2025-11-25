@@ -1,6 +1,5 @@
 package com.senac.aulaFull.infra.config;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -41,38 +45,43 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        //rotas publicas p autenticacao e validacao do certificado emitido
+
+                        .requestMatchers(HttpMethod.POST, "/auth/setup-instituicao").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/instituicoes/nomes").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/certificados/validar/**").permitAll()
-                        //rotas de cursos usuarios logados
+                        .requestMatchers("/api/master/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/cursos").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/cursos/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/cursos/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/cursos/{cursoId}/alunos/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/usuarios/{alunoId}/cursos").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/matriculas/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/certificados").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/certificados/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/certificados/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios", "/api/usuarios/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/cursos").authenticated()
-                        //rotas de cursos adm
-                        .requestMatchers("/api/cursos/{cursoId}/alunos/**").hasRole("ADMIN")
-                        .requestMatchers("/api/usuarios/{alunoId}/cursos").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/cursos").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/cursos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/cursos/**").hasRole("ADMIN")
-                        //rotas de certificados p adm
-                        .requestMatchers(HttpMethod.POST, "/api/certificados").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/certificados/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/certificados/**").hasRole("ADMIN")
-                        //usuario logado listar e senha
                         .requestMatchers(HttpMethod.GET, "/api/certificados").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/usuarios/me/senha").authenticated()
-
-                        // rota de uusuarios
-                        .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                        //rota adm listar usuarios
-                        .requestMatchers(HttpMethod.GET, "/usuarios", "/usuarios/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/usuarios/me/senha").authenticated()
-
-                        //qualquer outra requisicao precisa estar autenticado com token
+                        .requestMatchers(HttpMethod.PUT, "/api/usuarios/me/senha").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

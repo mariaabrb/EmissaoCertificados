@@ -1,10 +1,12 @@
 package com.senac.aulaFull.infra.external;
 
 import com.senac.aulaFull.domain.interfaces.IEnvioEmail;
+import jakarta.mail.internet.MimeMessage; // Importante
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper; // Importante
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +30,27 @@ public class EnvioEmailRepository implements IEnvioEmail {
             message.setText(texto);
             javaMailSender.send(message);
         } catch (Exception e) {
-
-            System.err.println("erro ao enviar e-mail simples: " + e.getMessage());
+            System.err.println("Erro ao enviar e-mail simples: " + e.getMessage());
         }
     }
 
+    @Override
+    @Async
+    public void enviarEmailHtml(String para, String assunto, String htmlBody) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(remetente);
+            helper.setTo(para);
+            helper.setSubject(assunto);
+
+            helper.setText(htmlBody, true);
+
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("Erro ao enviar e-mail HTML: " + e.getMessage());
+        }
+    }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api'; 
 import { Table, Button, Modal, Form, Spinner, Alert, Card, Container } from 'react-bootstrap';
-
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Importe os ícones
 
 interface Curso {
   id: number;
@@ -12,19 +12,24 @@ function GerenciarCursosPage() {
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
   const [showModal, setShowModal] = useState(false);
-  const [novoCursoNome, setNovoCursoNome] = useState('');
+  const [nomeCurso, setNomeCurso] = useState('');
+  
+  // Estado para saber se estamos editando (se null, é criação)
+  const [editingCursoId, setEditingCursoId] = useState<number | null>(null); 
+  
   const [isSaving, setIsSaving] = useState(false);
 
   const fetchCursos = async () => {
     setIsLoading(true);
+    setError(null); 
     try {
-      const token = localStorage.getItem('authToken');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await axios.get('http://localhost:8080/api/cursos', config);
+      const response = await api.get('/api/cursos');
       setCursos(response.data);
     } catch (err) {
-      setError('Não foi possível carregar os cursos');
+      console.error(err);
+      setError('Não foi possível carregar os cursos.');
     } finally {
       setIsLoading(false);
     }
@@ -34,78 +39,96 @@ function GerenciarCursosPage() {
     fetchCursos();
   }, []);
 
+  // --- PREPARAR PARA CRIAR ---
+  const handleOpenCreate = () => {
+      setEditingCursoId(null); // Limpa o ID (Modo Criação)
+      setNomeCurso('');
+      setShowModal(true);
+  }
+
+  // --- PREPARAR PARA EDITAR ---
+  const handleOpenEdit = (curso: Curso) => {
+      setEditingCursoId(curso.id); // Seta o ID (Modo Edição)
+      setNomeCurso(curso.nome); // Preenche o campo
+      setShowModal(true);
+  }
+
   const handleSalvar = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!novoCursoNome.trim()) {
-      alert('o nome do curso não pode ser vazio');
+    if (!nomeCurso.trim()) {
+      alert('O nome do curso não pode ser vazio.');
       return;
     }
     setIsSaving(true);
+    
     try {
-      const token = localStorage.getItem('authToken');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const body = { nome: novoCursoNome };
-      const response = await axios.post('http://localhost:8080/api/cursos', body, config);
+      if (editingCursoId) {
+          // --- MODO EDIÇÃO (PUT) ---
+          await api.put(`/api/cursos/${editingCursoId}`, { nome: nomeCurso });
+          
+          // Atualiza a lista localmente
+          setCursos(cursos.map(c => c.id === editingCursoId ? { ...c, nome: nomeCurso } : c));
+      } else {
+          // --- MODO CRIAÇÃO (POST) ---
+          const response = await api.post('/api/cursos', { nome: nomeCurso });
+          setCursos([...cursos, response.data]);
+      }
       
-      setCursos([...cursos, response.data]);
-      
-      //limpa e fecha o  modal
-      setNovoCursoNome('');
       setShowModal(false);
+      setNomeCurso('');
+      setEditingCursoId(null);
     } catch (err) {
-      alert('Erro ao salvar o curso');
+      console.error(err);
+      alert('Erro ao salvar o curso.');
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDeletar = async (id: number) => {
-    if (window.confirm('deseja deletar este curso?')) {
+    if (window.confirm('Deseja realmente deletar este curso?')) {
       try {
-        const token = localStorage.getItem('authToken');
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        await axios.delete(`http://localhost:8080/api/cursos/${id}`, config);
-        
+        await api.delete(`/api/cursos/${id}`);
         setCursos(cursos.filter(curso => curso.id !== id));
       } catch (err) {
-        alert('Erro ao deletar o curso.');
+        alert('Erro ao deletar. Verifique se há alunos matriculados.');
       }
     }
   };
 
   const renderContent = () => {
-    if (isLoading) {
-      return <div className="text-center"><Spinner animation="border" /> Carregando...</div>;
-    }
-    if (error) {
-      return <Alert variant="danger">{error}</Alert>;
-    }
+    if (isLoading) return <div className="text-center py-5"><Spinner animation="border" /></div>;
+    if (error) return <Alert variant="danger">{error}</Alert>;
+    
     return (
-      <Table striped bordered hover responsive>
-        <thead>
+      <Table striped bordered hover responsive className="mb-0">
+        <thead className="bg-light">
           <tr>
             <th>ID</th>
             <th>Nome do Curso</th>
-            <th className="text-center">Ações</th>
+            <th className="text-center" style={{ width: '180px' }}>Ações</th>
           </tr>
         </thead>
         <tbody>
           {cursos.length > 0 ? (
             cursos.map(curso => (
-              <tr key={curso.id}>
+              <tr key={curso.id} className="align-middle">
                 <td>{curso.id}</td>
                 <td>{curso.nome}</td>
                 <td className="text-center">
-                  <Button variant="danger" size="sm" onClick={() => handleDeletar(curso.id)}>
-                    Deletar
+                  {/* BOTÃO EDITAR */}
+                  <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenEdit(curso)}>
+                    <FaEdit />
+                  </Button>
+                  {/* BOTÃO DELETAR */}
+                  <Button variant="outline-danger" size="sm" onClick={() => handleDeletar(curso.id)}>
+                    <FaTrash />
                   </Button>
                 </td>
               </tr>
             ))
           ) : (
-            <tr>
-              <td colSpan={3} className="text-center">Nenhum curso cadastrado.</td>
-            </tr>
+            <tr><td colSpan={3} className="text-center py-4 text-muted">Nenhum curso cadastrado.</td></tr>
           )}
         </tbody>
       </Table>
@@ -113,42 +136,48 @@ function GerenciarCursosPage() {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Gerenciar Cursos</h1>
-        <Button variant="primary" onClick={() => setShowModal(true)}>
-          Adicionar Novo Curso
+        <div>
+            <h1 className="mb-0">Gerenciar Cursos</h1>
+            <p className="text-muted mb-0">Crie, edite e gerencie os cursos.</p>
+        </div>
+        <Button variant="primary" onClick={handleOpenCreate}>
+          + Novo Curso
         </Button>
       </div>
-      <Card>
-        <Card.Body>
+      
+      <Card className="shadow-sm">
+        <Card.Body className="p-0">
           {renderContent()}
         </Card.Body>
       </Card>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Adicionar Novo Curso</Modal.Title>
+          {/* Título dinâmico */}
+          <Modal.Title>{editingCursoId ? 'Editar Curso' : 'Adicionar Novo Curso'}</Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSalvar}>
           <Modal.Body>
-            <Form.Group>
+            <Form.Group controlId="formCursoNome">
               <Form.Label>Nome do Curso</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Ex: Engenharia de Software"
-                value={novoCursoNome}
-                onChange={(e) => setNovoCursoNome(e.target.value)}
+                value={nomeCurso}
+                onChange={(e) => setNomeCurso(e.target.value)}
                 required
+                autoFocus
               />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
+            <Button variant="secondary" onClick={() => setShowModal(false)} disabled={isSaving}>
               Cancelar
             </Button>
             <Button variant="primary" type="submit" disabled={isSaving}>
-              {isSaving ? <Spinner as="span" animation="border" size="sm" /> : 'Salvar'}
+              {isSaving ? <Spinner size="sm" animation="border"/> : (editingCursoId ? 'Salvar Alterações' : 'Criar Curso')}
             </Button>
           </Modal.Footer>
         </Form>

@@ -3,6 +3,7 @@ package com.senac.aulaFull.application.services;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.GrantedAuthority;
 import com.senac.aulaFull.domain.model.Token;
 import com.senac.aulaFull.domain.model.Usuario;
@@ -50,6 +51,7 @@ public class TokenService {
         }
     }
 
+    @Transactional
     public Usuario validarToken(String token){
         Algorithm algoritm = Algorithm.HMAC256(secret);
         JWTVerifier verifier = JWT.require(algoritm)

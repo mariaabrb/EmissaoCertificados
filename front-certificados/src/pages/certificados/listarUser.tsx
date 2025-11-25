@@ -1,37 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Table, Spinner, Alert } from 'react-bootstrap';
+import api from '../../services/api';
+import { Link } from 'react-router-dom';
+import { Table, Spinner, Alert, Button, Badge } from 'react-bootstrap';
 
 interface Certificado {
   id: number;
   nomeAluno: string;
-  curso: {
-    id: number;
-    nome: string;
-  };
+  nomeCurso: string;
+  nomeInstituicao: string;
   codValidacao: string;
+  dataEmissao: string;
 }
 
 function ListarCertificadosPage() {
   const [certificados, setCertificados] = useState<Certificado[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const buscarCertificados = async () => {
+      setIsLoading(true);
+      setError('');
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) throw new Error('Usuário não autenticado.');
-        
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get('http://localhost:8080/api/certificados', config);
-        setCertificados(response.data);
+        const response = await api.get('/api/certificados');
+
+        if (Array.isArray(response.data)) {
+          setCertificados(response.data);
+        } else {
+          setCertificados([]);
+        }
       } catch (err) {
+        console.error("Erro ao buscar certificados:", err);
         setError("Não foi possível carregar os certificados.");
       } finally {
         setIsLoading(false);
       }
     };
+
     buscarCertificados();
   }, []);
 
@@ -44,33 +49,51 @@ function ListarCertificadosPage() {
   }
 
   return (
-    <div>
-      <h1 className="mb-4">Meus Certificados</h1>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Meus Certificados</h1>
+      </div>
 
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Nome do Aluno</th>
-            <th>Curso</th>
-            <th>Código de Validação</th>
-          </tr>
-        </thead>
-        <tbody>
-          {certificados.length > 0 ? (
-            certificados.map(cert => (
-              <tr key={cert.id}>
-                <td>{cert.nomeAluno}</td>
-                <td>{cert.curso.nome}</td>
-                <td>{cert.codValidacao}</td>
-              </tr>
-            ))
-          ) : (
+      <div className="shadow-sm p-3 mb-5 bg-white rounded">
+        <Table striped bordered hover responsive>
+          <thead className="bg-light">
             <tr>
-              <td colSpan={3} className="text-center">Você ainda não possui certificados :(</td>
+              <th>Curso</th>
+              <th>Instituição</th>
+              <th>Aluno</th>
+              <th>Código de Validação</th>
+              <th>Ações</th>
             </tr>
-          )}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {certificados.length > 0 ? (
+              certificados.map(cert => (
+                <tr key={cert.id}>
+                  <td className="fw-bold">{cert.nomeCurso}</td>
+                  <td>{cert.nomeInstituicao}</td>
+                  <td>{cert.nomeAluno}</td>
+                  <td>
+                    <Badge bg="secondary" className="p-2" style={{ fontFamily: 'monospace' }}>
+                      {cert.codValidacao}
+                    </Badge>
+                  </td>
+                  <td>
+                    <Link to={`/validar-certificado/${cert.codValidacao}`} target="_blank">
+                      <Button variant="outline-primary" size="sm">Ver</Button>
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="text-center py-5 text-muted">
+                  Você ainda não possui certificados emitidos.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

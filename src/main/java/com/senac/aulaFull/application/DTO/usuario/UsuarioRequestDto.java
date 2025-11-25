@@ -4,6 +4,7 @@ public record UsuarioRequestDto(
         String nome,
         String email,
         String senha,
-        String cpf
+        String cpf,
+        String nomeInstituicao
 ) {
 }

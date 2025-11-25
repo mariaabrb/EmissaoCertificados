@@ -2,13 +2,15 @@ package com.senac.aulaFull.infra.presentation;
 
 import com.senac.aulaFull.application.DTO.curso.CursoResponseDto;
 import com.senac.aulaFull.application.DTO.usuario.UsuarioResponseDto;
-import com.senac.aulaFull.services.MatriculaService;
+import com.senac.aulaFull.application.services.MatriculaService;
+import com.senac.aulaFull.domain.model.Usuario;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,22 +25,27 @@ public class MatriculaController {
 
     @PostMapping("/cursos/{cursoId}/alunos/{alunoId}")
     @Operation(summary = "Matricular Aluno", description = "Associa um usuário (aluno) a um curso específico. Requer perfil ADMIN.")
-    public ResponseEntity<Void> matricularAluno(
+    public ResponseEntity<?> matricularAluno(
             @PathVariable Long cursoId,
             @PathVariable Long alunoId) {
         try {
             matriculaService.matricularAlunoEmCurso(alunoId, cursoId);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (Exception e) {
+
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Erro ao matricular: " + e.getMessage());
         }
     }
-
     @DeleteMapping("/cursos/{cursoId}/alunos/{alunoId}")
     @Operation(summary = "Desmatricular Aluno", description = "Remove a associação entre um usuário e um curso. Requer perfil ADMIN.")
     public ResponseEntity<Void> desmatricularAluno(
             @PathVariable Long cursoId,
-            @PathVariable Long alunoId) {
+            @PathVariable Long alunoId,
+            @AuthenticationPrincipal Usuario adminLogado) {
         try {
             matriculaService.desmatricularAlunoDeCurso(alunoId, cursoId);
             return ResponseEntity.noContent().build();
@@ -50,7 +57,8 @@ public class MatriculaController {
     @GetMapping("/cursos/{cursoId}/alunos")
     @Operation(summary = "Listar Alunos por Curso", description = "Retorna a lista de usuários matriculados em um curso específico. Requer perfil ADMIN.")
     public ResponseEntity<List<UsuarioResponseDto>> listarAlunosPorCurso(
-            @PathVariable Long cursoId) {
+            @PathVariable Long cursoId,
+            @AuthenticationPrincipal Usuario adminLogado) {
         try {
             List<UsuarioResponseDto> alunos = matriculaService.listarAlunosPorCurso(cursoId);
             return ResponseEntity.ok(alunos);
@@ -62,7 +70,8 @@ public class MatriculaController {
     @GetMapping("/usuarios/{alunoId}/cursos")
     @Operation(summary = "Listar Cursos por Aluno", description = "Retorna a lista de cursos em que um usuário está matriculado. Requer perfil ADMIN.")
     public ResponseEntity<List<CursoResponseDto>> listarCursosPorAluno(
-            @PathVariable Long alunoId) {
+            @PathVariable Long alunoId,
+            @AuthenticationPrincipal Usuario adminLogado) {
         try {
             List<CursoResponseDto> cursos = matriculaService.listarCursosPorAluno(alunoId);
             return ResponseEntity.ok(cursos);

@@ -1,30 +1,34 @@
 package com.senac.aulaFull.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Curso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false)
+    private Boolean ativo = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "instituicao_id", nullable = false)
-    private Instituicao instituicao;
+    @JoinColumn(name = "admin_id", nullable = false)
+    @ToString.Exclude
+    private Usuario adminResponsavel;
 
     @ManyToMany(mappedBy = "cursosMatriculados", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Set<Usuario> alunosMatriculados = new HashSet<>();
 }

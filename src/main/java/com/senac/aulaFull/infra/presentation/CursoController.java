@@ -55,4 +55,18 @@ public class CursoController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar Curso", description = "Altera o nome de um curso existente. Requer perfil de ADMIN.")
+    public ResponseEntity<?> atualizarCurso(
+            @PathVariable Long id,
+            @RequestBody CursoRequestDto dados,
+            @AuthenticationPrincipal Usuario adminLogado
+    ) {
+        try {
+            CursoResponseDto cursoAtualizado = cursoService.atualizarCurso(id, dados, adminLogado);
+            return ResponseEntity.ok(cursoAtualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
