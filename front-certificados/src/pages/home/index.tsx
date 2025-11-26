@@ -1,8 +1,9 @@
-import React from 'react';
+
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap';
 import './home.css'; 
 const PublicHeader = () => (
+
   <Navbar bg="transparent" expand="lg" variant="light" className="py-3">
     <Container>
       <Navbar.Brand as={Link} to="/" className="fw-bold fs-4" style={{ fontFamily: 'Montserrat, sans-serif' }}>
@@ -10,7 +11,7 @@ const PublicHeader = () => (
       </Navbar.Brand>
       <Nav className="ms-auto">
         <Link to="/auth/login">
-          <Button color="light" variant="primary" className="me-2">Entrar</Button>
+          <Button variant="primary" className="me-2">Entrar</Button>
         </Link>
         <Link to="/auth/cadastro">
           <Button variant="outline-primary">Cadastre-se</Button>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Spinner, Alert, Card } from 'react-bootstrap';
 import api from '../../services/api';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../redux/uiSlice';
 
 interface Curso {
   id: number;
@@ -22,6 +24,10 @@ interface UsuarioResponseDto {
 
 
 function EmitirCertificadoPage() {
+  const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setPageTitle("Emitir Certificados"));
+    }, [dispatch]);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [alunosDoCurso, setAlunosDoCurso] = useState<Aluno[]>([]);
 

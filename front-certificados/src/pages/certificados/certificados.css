@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap');
+
+.certificado-body {
+    background-color: #e9ecef;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Lato', sans-serif;
+}
+
+.certificado-container {
+    background-color: #fff;
+    width: 1123px; 
+    height: 794px; 
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+    box-sizing: border-box;
+    color: #333;
+}
+
+.certificado-borda {
+    border: 10px double #2E8B57; 
+    height: 100%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    align-items: center;
+    background-image: radial-gradient(circle, #f9fcf9 0%, #ffffff 100%); 
+}
+
+.certificado-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.certificado-titulo {
+    font-family: 'Cinzel', serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    margin: 0;
+    border-bottom: 2px solid #2E8B57;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+.certificado-subtitulo {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    color: #2E8B57;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.certificado-content {
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.texto-padrao {
+    font-size: 22px;
+    color: #555;
+    margin: 10px 0;
+}
+
+.nome-aluno {
+    font-family: 'Great Vibes', cursive;
+    font-size: 90px;
+    color: #1a1a1a;
+    margin: 10px 0;
+    line-height: 1.2;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.nome-curso {
+    font-family: 'Cinzel', serif;
+    font-size: 36px;
+    font-weight: bold;
+    color: #2E8B57;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.certificado-footer {
+    width: 100%;
+    margin-top: 40px;
+}
+
+.assinaturas-container {
+    display: flex;
+    justify-content: space-around; 
+    margin-bottom: 30px;
+}
+
+.assinatura-box {
+    text-align: center;
+    width: 300px;
+}
+
+.linha-assinatura {
+    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
+    height: 40px; 
+}
+
+.cargo-assinatura {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+}
+
+.info-validacao {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.codigo-validacao {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #333;
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.btn-print-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+@media print {
+    .btn-print-container { display: none !important; }
+    .certificado-body { 
+        background-color: white; 
+        padding: 0; 
+        display: block;
+    }
+    .certificado-container {
+        box-shadow: none;
+        width: 100%;
+        height: 100%;
+        page-break-after: always;
+    }
+    @page {
+        size: landscape;
+        margin: 0;
+    }
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}

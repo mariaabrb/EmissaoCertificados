@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Table, Spinner, Alert, Badge } from 'react-bootstrap';
 import api from '../../services/api'; 
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../redux/uiSlice';
 
-// Interface do DTO
 interface Usuario {
     id: number;
     nome: string;
@@ -12,11 +13,14 @@ interface Usuario {
 }
 
 function GerenciarUsuariosPage() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setPageTitle("Gerenciar Usuários"));
+    }, [dispatch]);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Busca a lista de usuários
     useEffect(() => {
         const fetchUsuarios = async () => {
             setIsLoading(true);
@@ -34,7 +38,6 @@ function GerenciarUsuariosPage() {
         fetchUsuarios();
     }, []);
 
-    // Helpers de Formatação
     const formatRole = (role: string) => {
         if (role.includes('ROLE_ADMIN')) return 'Administrador';
         if (role.includes('ROLE_USER')) return 'Aluno';
@@ -104,5 +107,4 @@ function GerenciarUsuariosPage() {
         </Container>
     );
 }
-
 export default GerenciarUsuariosPage;

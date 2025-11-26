@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { Link } from 'react-router-dom';
 import { Table, Spinner, Alert, Button, Badge } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../redux/uiSlice';
 
 interface Certificado {
   id: number;
@@ -13,6 +15,10 @@ interface Certificado {
 }
 
 function ListarCertificadosPage() {
+   const dispatch = useDispatch();
+  useEffect(() => {
+        dispatch(setPageTitle("Meus Certificados"));
+    }, [dispatch]);
   const [certificados, setCertificados] = useState<Certificado[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');

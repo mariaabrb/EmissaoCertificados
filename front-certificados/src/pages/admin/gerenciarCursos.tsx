@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api'; 
 import { Table, Button, Modal, Form, Spinner, Alert, Card, Container } from 'react-bootstrap';
-import { FaEdit, FaTrash } from 'react-icons/fa'; // Importe os ícones
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../redux/uiSlice';
 
 interface Curso {
   id: number;
@@ -9,14 +11,19 @@ interface Curso {
 }
 
 function GerenciarCursosPage() {
+
+  const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setPageTitle("Gestão de Cursos"));
+    }, [dispatch]);
+    
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   const [showModal, setShowModal] = useState(false);
   const [nomeCurso, setNomeCurso] = useState('');
-  
-  // Estado para saber se estamos editando (se null, é criação)
+
   const [editingCursoId, setEditingCursoId] = useState<number | null>(null); 
   
   const [isSaving, setIsSaving] = useState(false);
@@ -39,17 +46,15 @@ function GerenciarCursosPage() {
     fetchCursos();
   }, []);
 
-  // --- PREPARAR PARA CRIAR ---
   const handleOpenCreate = () => {
-      setEditingCursoId(null); // Limpa o ID (Modo Criação)
+      setEditingCursoId(null);
       setNomeCurso('');
       setShowModal(true);
   }
 
-  // --- PREPARAR PARA EDITAR ---
   const handleOpenEdit = (curso: Curso) => {
-      setEditingCursoId(curso.id); // Seta o ID (Modo Edição)
-      setNomeCurso(curso.nome); // Preenche o campo
+      setEditingCursoId(curso.id);
+      setNomeCurso(curso.nome);
       setShowModal(true);
   }
 
@@ -63,13 +68,10 @@ function GerenciarCursosPage() {
     
     try {
       if (editingCursoId) {
-          // --- MODO EDIÇÃO (PUT) ---
           await api.put(`/api/cursos/${editingCursoId}`, { nome: nomeCurso });
-          
-          // Atualiza a lista localmente
+
           setCursos(cursos.map(c => c.id === editingCursoId ? { ...c, nome: nomeCurso } : c));
       } else {
-          // --- MODO CRIAÇÃO (POST) ---
           const response = await api.post('/api/cursos', { nome: nomeCurso });
           setCursos([...cursos, response.data]);
       }
@@ -116,11 +118,9 @@ function GerenciarCursosPage() {
                 <td>{curso.id}</td>
                 <td>{curso.nome}</td>
                 <td className="text-center">
-                  {/* BOTÃO EDITAR */}
                   <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenEdit(curso)}>
                     <FaEdit />
                   </Button>
-                  {/* BOTÃO DELETAR */}
                   <Button variant="outline-danger" size="sm" onClick={() => handleDeletar(curso.id)}>
                     <FaTrash />
                   </Button>
@@ -155,7 +155,6 @@ function GerenciarCursosPage() {
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          {/* Título dinâmico */}
           <Modal.Title>{editingCursoId ? 'Editar Curso' : 'Adicionar Novo Curso'}</Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleSalvar}>

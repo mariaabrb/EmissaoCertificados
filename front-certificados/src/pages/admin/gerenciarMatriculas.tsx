@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Form, ListGroup, Button, Spinner, Alert, Badge } from 'react-bootstrap'; // Adicionado Badge
+import { Container, Card, Form, ListGroup, Button, Spinner, Alert, Badge } from 'react-bootstrap';
 import api from '../../services/api';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../redux/uiSlice';
 
 interface Curso {
   id: number;
@@ -22,6 +24,10 @@ interface UsuarioResponseDto {
 }
 
 function GerenciarMatriculasPage() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+        dispatch(setPageTitle("Matrículas e Alunos"));
+    }, [dispatch]);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [selectedCursoId, setSelectedCursoId] = useState<string>('');
   const [todosUsuarios, setTodosUsuarios] = useState<Usuario[]>([]);
