@@ -1,5 +1,6 @@
 import axios from "axios";
 import { store } from "../redux/store";
+import { logout } from "../redux/authSlice";
 
 
 
@@ -15,7 +16,6 @@ api.interceptors.request.use(
 
         const state =store.getState();
         const token = state.auth.token;
-        console.log(token);
 
         if(token){
             config.headers.Authorization =`Bearer ${token}`;
@@ -25,6 +25,19 @@ api.interceptors.request.use(
         return config;
     },
     (error)=>{
+        return Promise.reject(error);
+    }
+);
+
+api.interceptors.response.use(
+    (response) => response, 
+    (error) => {
+
+        if (error.response && error.response.status === 401) {
+
+            store.dispatch(logout());
+   
+        }
         return Promise.reject(error);
     }
 );

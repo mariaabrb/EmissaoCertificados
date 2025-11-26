@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../services/api';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../redux/uiSlice';
 import { Spinner, Alert } from 'react-bootstrap';
 
 interface CertificadoDados {
@@ -13,6 +15,10 @@ interface CertificadoDados {
 }
 
 function VisualizarCertificadoPage() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setPageTitle("Visualizar Certificado"));
+    }, [dispatch]);
     const { codigo } = useParams();
     const [dados, setDados] = useState<CertificadoDados | null>(null);
     const [loading, setLoading] = useState(true);
